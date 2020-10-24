@@ -6,6 +6,11 @@ const ctx = canvas.getContext('2d')
 canvas.width = innerWidth
 canvas.height =  innerHeight
 
+const scoreEl = document.querySelector('#scoreEl');
+const startGameBtn = document.querySelector('#startGameBtn')
+const container = document.querySelector('#container')
+const bigScoreEl = document.querySelector('#bigScoreEl')
+
 //end of defining canvas width and height
 
 //Creating a Player
@@ -74,12 +79,21 @@ class Enemy {
 }
 
 //Placing the player in the middle of the screen
-const x = canvas.width / 2
-const y = canvas.height / 2
+let x = canvas.width / 2
+let y = canvas.height / 2
 
-const player = new Player(x, y, 30, 'blue')
-const projectiles = [] //multiple projectiles will be stored in this array
-const enemies = []
+let player = new Player(x, y, 30, 'blue')
+let projectiles = [] //multiple projectiles will be stored in this array
+let enemies = []
+
+function init() {
+    player = new Player(x, y, 30, 'blue')
+    projectiles = [] 
+    enemies = []
+    score = 0
+    scoreEl.innerHTML = score
+    bigScoreEl.innerHTML = score
+}
 
 function spawnEnemies() {
     setInterval (() => {
@@ -108,9 +122,12 @@ function spawnEnemies() {
     }, 1000)
 }
 let animationId
+let score = 0
 function animate() {
     animationId = requestAnimationFrame(animate)
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = 'rgba(255,255,255, 0.1)' //changes the opacity
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    
     player.draw()
     projectiles.forEach((projectile, index) => {
         projectile.update()
@@ -130,23 +147,37 @@ function animate() {
 
         const distance = Math.hypot(player.x - enemy.x, player.y - enemy.y)
 
-        //End Game
+//End Game
         if (distance - enemy.radius - player.radius < 1) {
             cancelAnimationFrame(animationId)
-
+            container.style.display = 'flex'
+            bigScoreEl.innerHTML = score
         }
 
 //Detect collision on enemy / projectile hit
         projectiles.forEach((projectile) => {
             const distance = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y) //Hypot is the distance between two points
-//objects touch
+
+//when projectiles touch enemy
             if (distance - enemy.radius - projectile.radius < 1) {
+    //Increase score
+            score += 100
+            scoreEl.innerHTML = score
+            console.log(score)
+    
+                if(enemy.radius > 10) {
+                    enemy.radius -= 10
+                    setTimeout(() => {
+                        enemies.splice(index, 1)
+                        projectiles.splice(projectileIndex, 1)
+                    }, 0)               
+                } else {
                 setTimeout(() => {
                     enemies.splice(index, 1)
                     projectiles.splice(projectileIndex, 1)
-                }, 0)
-                
+                }, 0)               
             }
+          }
         })
     })
 }
@@ -156,19 +187,64 @@ addEventListener('click', (event) =>
     const angle = Math.atan2(event.clientY -canvas.height / 2, event.clientX - canvas.width /2)
     
     const speed = {
-        x: Math.cos(angle),
-        y: Math.sin(angle)
+        x: Math.cos(angle) * 5,
+        y: Math.sin(angle) * 5
     }
     projectiles.push(
         new Projectile(canvas.width / 2, canvas.height / 2, 5, 'red', speed,)
         )
 })
 
-animate()
-spawnEnemies()
+startGameBtn.addEventListener('click', () => {
+    init()
+    animate()
+    spawnEnemies()
+    container.style.display = 'none'
+})
+
 
 /* Trigonometry for projectiles: determine x and y speed ; 
 1) get the angle 
 2) get the angle using atan2() angle in radians 
 3) get the x and y velocities sin(angle) cos(angle)
 */
+
+//Replacing shapes by  actual characters
+// class Enemy {
+//     constructor (x, y, radius, color, speed) {
+//         this.x = x
+//         this.y = y
+//         this.radius = radius
+//         this.color = color
+//         this.speed = speed
+//         this.image = new Image()
+//         this.image.src= "./ironvirus/iron-virus-06.png"
+//     }
+
+//     draw() {//this function produces a circle
+//         //ctx.beginPath()
+//         // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+//         // ctx.fillStyle = this.color
+//         // ctx.fill()  
+//         ctx.drawImage(this.image, this.x, this.y, 100, 100)
+//     }
+
+
+// class Enemy {
+//     constructor (x, y, radius, color, speed) {
+//         this.x = x
+//         this.y = y
+//         this.radius = radius
+//         this.color = color
+//         this.speed = speed
+//         this.image = new Image()
+//         this.image.src= "./ironvirus/iron-virus-06.png"
+//     }
+
+//     draw() {//this function produces a circle
+//         //ctx.beginPath()
+//         // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+//         // ctx.fillStyle = this.color
+//         // ctx.fill()  
+//         ctx.drawImage(this.image, this.x, this.y, 100, 100)
+//     }

@@ -21,15 +21,12 @@ class Player {
         this.y = y
         this.radius = radius
         this.color = color
-        this.image = new Image()
-        this.image.src = "./ironvirus/Boy_Mask.png"
     }
     draw() {//this function produces a circle
-        // ctx.beginPath()
-        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-        // ctx.fillStyle = this.color
-        // ctx.fill()  
-        ctx.drawImage(this.image, this.x, this.y, 200, 200)  
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        ctx.fillStyle = this.color
+        ctx.fill()    
     }
 }
 
@@ -42,15 +39,12 @@ class Projectile {
         this.radius = radius
         this.color = color
         this.speed = speed
-        this.image = new Image ()
-        this.image.src = "./ironvirus/Soap1.png"
     }
     draw() {//this function produces a circle
-        // ctx.beginPath()
-        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-        // ctx.fillStyle = this.color
-        // ctx.fill()  
-        ctx.drawImage(this.image, this.x, this.y, 50, 50)
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        ctx.fillStyle = this.color
+        ctx.fill()  
     }
 
     update() {
@@ -68,16 +62,12 @@ class Enemy {
         this.radius = radius
         this.color = color
         this.speed = speed
-        this.image = new Image ()
-        this.image.src = "./ironvirus/MadVirus.png"
-
     }
     draw() {//this function produces a circle
-        // ctx.beginPath()
-        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-        // ctx.fillStyle = this.color
-        // ctx.fill()  
-        ctx.drawImage(this.image, this.x, this.y, 100, 100)
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        ctx.fillStyle = this.color
+        ctx.fill()  
     }
 
     update() {
@@ -89,20 +79,15 @@ class Enemy {
 }
 
 //Placing the player in the middle of the screen
-let x = canvas.width / 2
-let y = canvas.height / 2
+const x = canvas.width / 2
+const y = canvas.height / 2
 
-let player = new Player(x, y, 30, 'blue')
-let projectiles = [] //multiple projectiles will be stored in this array
-let enemies = []
+const player = new Player(x, y, 30, 'blue')
+const projectiles = [] //multiple projectiles will be stored in this array
+const enemies = []
 
 function init() {
-    player = new Player(x, y, 30, 'blue')
-    projectiles = [] 
-    enemies = []
-    score = 0
-    scoreEl.innerHTML = score
-    bigScoreEl.innerHTML = score
+    
 }
 
 function spawnEnemies() {
@@ -206,7 +191,6 @@ addEventListener('click', (event) =>
 })
 
 startGameBtn.addEventListener('click', () => {
-    init()
     animate()
     spawnEnemies()
     container.style.display = 'none'
