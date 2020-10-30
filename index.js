@@ -142,7 +142,7 @@ function init() {
     score = 0
     scoreEl.innerHTML = score
     bigScoreEl.innerHTML = score
-    mySound = new sound("bounce.mp3");
+    // mySound = new sound("bounce.mp3");
    
 }
 
