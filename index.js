@@ -209,14 +209,15 @@ function animate() {
 
 // Win Game
 
-        // function youWin() {
-        //     cancelAnimationFrame(animationId)
-        //     container.style.display = 'flex'
-        //     bigScoreEl.innerHTML = score
-        // }
+        function youWin() {
+            cancelAnimationFrame(animationId)
+            container.style.display = 'flex'
+            document.getElementById("imgCentral").src = "./ironvirus/YouWin.png"
+        }
 
-        // if(score >= 1000){
-        //     youWin();
+        if(score >= 1000){
+            youWin();
+        }
 
 //Detect collision on enemy / projectile hit
         projectiles.forEach((projectile, projectileIndex) => {
