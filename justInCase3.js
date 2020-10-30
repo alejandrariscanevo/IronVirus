@@ -10,23 +10,51 @@ const scoreEl = document.querySelector('#scoreEl');
 const startGameBtn = document.querySelector('#startGameBtn')
 const container = document.querySelector('#container')
 const bigScoreEl = document.querySelector('#bigScoreEl')
+// const imagePlayer;
+
+// function imageSelector (){
+//     const boyImage = document.getElementById("btnBoy")
+//     const girlImage = document.getElementById("btnGirl")
+//     if (boyImage === 'boy'){
+//         imagePlayer = "./ironvirus/Boy_Mask.png"
+//         console.log(imagePlayer)
+//     }else if(girlImage === 'girl'){
+//             imagePlayer = "./ironvirus/Girl_Mask.png"
+//             console.log(imagePlayer)
+//         }
+// }
+
 
 //end of defining canvas width and height
 
 //Creating a Player
 
 class Player {
-    constructor (x, y, radius, color) {
+    constructor (x, y, radius, color, width, height) {
         this.x = x
         this.y = y
         this.radius = radius
         this.color = color
+        this.width = 200
+        this.height = 200
+        this.image = new Image()
+        this.image.src = "./ironvirus/Boy_Mask.png"
+    }
+
+    collition(enemy){
+        return(
+            this.x < enemy.x + enemy.width &&
+            this.x + this.width > enemy.x  &&
+            this.y < enemy.y + enemy.height &&
+            this.y + this.height > enemy.y 
+        )
     }
     draw() {//this function produces a circle
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-        ctx.fillStyle = this.color
-        ctx.fill()    
+        // ctx.beginPath()
+        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        // ctx.fillStyle = this.color
+        // ctx.fill()  
+        ctx.drawImage(this.image, this.x, this.y, 200, 200)  
     }
 }
 
@@ -39,12 +67,27 @@ class Projectile {
         this.radius = radius
         this.color = color
         this.speed = speed
+        this.width = 50
+        this.height = 50
+        this.image = new Image ()
+        this.image.src = "./ironvirus/Soap1.png"
     }
+
+    collition(enemy){
+        return(
+            this.x < enemy.x + enemy.width &&
+            this.x + this.width > enemy.x  &&
+            this.y < enemy.y + enemy.height &&
+            this.y + this.height > enemy.y 
+        )
+    }
+
     draw() {//this function produces a circle
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-        ctx.fillStyle = this.color
-        ctx.fill()  
+        // ctx.beginPath()
+        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        // ctx.fillStyle = this.color
+        // ctx.fill()  
+        ctx.drawImage(this.image, this.x, this.y, 50, 50)
     }
 
     update() {
@@ -56,18 +99,24 @@ class Projectile {
 }
 
 class Enemy {
-    constructor (x, y, radius, color, speed) {
+    constructor (x, y, radius, color, speed, width, height) {
         this.x = x
         this.y = y
         this.radius = radius
         this.color = color
         this.speed = speed
+        this.width = 100
+        this.height = 100
+        this.image = new Image ()
+        this.image.src = "./ironvirus/MadVirus.png"
+
     }
     draw() {//this function produces a circle
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-        ctx.fillStyle = this.color
-        ctx.fill()  
+        // ctx.beginPath()
+        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        // ctx.fillStyle = this.color
+        // ctx.fill()  
+        ctx.drawImage(this.image, this.x, this.y, 100, 100)
     }
 
     update() {
@@ -79,15 +128,21 @@ class Enemy {
 }
 
 //Placing the player in the middle of the screen
-const x = canvas.width / 2
-const y = canvas.height / 2
+let x = (canvas.width - 150)  / 2 
+let y = (canvas.height - 150) / 2
 
-const player = new Player(x, y, 30, 'blue')
-const projectiles = [] //multiple projectiles will be stored in this array
-const enemies = []
+let player = new Player(x, y, 30, 'blue')
+let projectiles = [] //multiple projectiles will be stored in this array
+let enemies = []
 
 function init() {
-    
+    player = new Player(x, y, 30, 'blue')
+    projectiles = [] 
+    enemies = []
+    score = 0
+    scoreEl.innerHTML = score
+    bigScoreEl.innerHTML = score
+   
 }
 
 function spawnEnemies() {
@@ -143,18 +198,21 @@ function animate() {
         const distance = Math.hypot(player.x - enemy.x, player.y - enemy.y)
 
 //End Game
-        if (distance - enemy.radius - player.radius < 1) {
+        // if (distance - enemy.radius - player.radius < 1) {
+            if (player.collition(enemy)){
+            // if (distance - enemy.width && enemy.height - player.width && player.height < 1){
             cancelAnimationFrame(animationId)
             container.style.display = 'flex'
             bigScoreEl.innerHTML = score
         }
 
 //Detect collision on enemy / projectile hit
-        projectiles.forEach((projectile) => {
+        projectiles.forEach((projectile, projectileIndex) => {
             const distance = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y) //Hypot is the distance between two points
 
 //when projectiles touch enemy
-            if (distance - enemy.radius - projectile.radius < 1) {
+            // if (distance - enemy.radius - projectile.radius < 1) {
+                if (projectile.collition(enemy)){
     //Increase score
             score += 100
             scoreEl.innerHTML = score
@@ -191,6 +249,7 @@ addEventListener('click', (event) =>
 })
 
 startGameBtn.addEventListener('click', () => {
+    init()
     animate()
     spawnEnemies()
     container.style.display = 'none'
