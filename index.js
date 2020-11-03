@@ -215,9 +215,11 @@ function animate() {
             document.getElementById("imgCentral").src = "./ironvirus/YouWin.png"
         }
 
-        if(score >= 1000){
+        if(score >= 10000){
             youWin();
         }
+
+
 
 //Detect collision on enemy / projectile hit
         projectiles.forEach((projectile, projectileIndex) => {
